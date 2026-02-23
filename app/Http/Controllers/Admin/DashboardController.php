@@ -3,22 +3,29 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\User;
+use App\Models\BarangMasuk;
+use App\Models\BarangKeluar;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $totalUsers = User::count();
-        $activeUsers = User::where('status', 'active')->count();
-        $pendingUsers = User::where('status', 'pending')->count();
-        $rejectedUsers = User::where('status', 'rejected')->count();
+        $totalProduk = Product::count();
+        $totalUser = User::count();
+        $totalMasuk = BarangMasuk::count();
+        $totalKeluar = BarangKeluar::count();
+
+        // Produk dengan stok <= minimum_stock
+        $stokMinimum = Product::whereColumn('stock', '<=', 'minimum_stock')->get();
 
         return view('admin.dashboard', compact(
-            'totalUsers',
-            'activeUsers',
-            'pendingUsers',
-            'rejectedUsers'
+            'totalProduk',
+            'totalUser',
+            'totalMasuk',
+            'totalKeluar',
+            'stokMinimum'
         ));
     }
 }

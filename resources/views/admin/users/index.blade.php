@@ -2,19 +2,7 @@
 
 @section('content')
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Manajemen User</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body style="background:#f4f6f9;">
-
-<div class="container mt-5">
+<div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3>Manajemen User</h3>
@@ -23,15 +11,42 @@
         </a>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
+    <form method="GET" class="row mb-3">
+        <div class="col-md-3">
+            <select name="role" class="form-select">
+                <option value="">Semua Role</option>
+                <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                <option value="petugas" {{ request('role') == 'petugas' ? 'selected' : '' }}>Petugas</option>
+                <option value="supervisor" {{ request('role') == 'supervisor' ? 'selected' : '' }}>Supervisor</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <select name="status" class="form-select">
+                <option value="">Semua Status</option>
+                <option value="pending">Pending</option>
+                <option value="active">Active</option>
+                <option value="rejected">Rejected</option>
+            </select>
+        </div>
+        
+        <div class="col-md-3">
+            <button class="btn btn-primary">Filter</button>
+            <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Reset</a>
+        </div>
+    </form>
+
+   @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
     @if(session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
@@ -56,7 +71,7 @@
                             <td>{{ $user->email }}</td>
                             <td>
                                 <span class="badge bg-info text-dark">
-                                    {{ $user->role }}
+                                    {{ ucfirst($user->role) }}
                                 </span>
                             </td>
                             <td>
@@ -70,6 +85,7 @@
                             </td>
                             <td>
 
+                                {{-- Approve / Reject --}}
                                 @if($user->status == 'pending')
                                     <form action="{{ route('admin.users.approve', $user->id) }}" method="POST" class="d-inline">
                                         @csrf
@@ -86,6 +102,7 @@
                                     </form>
                                 @endif
 
+                                {{-- Delete --}}
                                 @if($user->id != auth()->id())
                                     <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline"
                                           onsubmit="return confirm('Yakin ingin menghapus user ini?')">
@@ -95,6 +112,7 @@
                                             Hapus
                                         </button>
                                     </form>
+                                    
                                 @endif
 
                             </td>
@@ -114,8 +132,5 @@
     </div>
 
 </div>
-
-</body>
-</html>
 
 @endsection

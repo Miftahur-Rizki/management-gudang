@@ -8,10 +8,23 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    // Tampilkan semua user
-    public function index()
+    // Tampilkan semua user (kecuali admin utama jika mau bisa difilter)
+    public function index(Request $request)
     {
-        $users = User::latest()->get();
+        $query = User::query();
+
+        // Filter berdasarkan role
+        if ($request->role) {
+            $query->where('role', $request->role);
+        }
+
+        // Filter berdasarkan status
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
+
+        $users = $query->latest()->get();
+
         return view('admin.users.index', compact('users'));
     }
 
@@ -19,8 +32,14 @@ class UserController extends Controller
     public function approve($id)
     {
         $user = User::findOrFail($id);
-        $user->status = 'active';
-        $user->save();
+
+        if ($user->status === 'active') {
+            return back()->with('error', 'User sudah aktif.');
+        }
+
+        $user->update([
+            'status' => 'active'
+        ]);
 
         return back()->with('success', 'User berhasil diaktifkan.');
     }
@@ -29,10 +48,16 @@ class UserController extends Controller
     public function reject($id)
     {
         $user = User::findOrFail($id);
-        $user->status = 'rejected';
-        $user->save();
 
-        return back()->with('success', 'User ditolak.');
+        if ($user->status === 'rejected') {
+            return back()->with('error', 'User sudah ditolak.');
+        }
+
+        $user->update([
+            'status' => 'rejected'
+        ]);
+
+        return back()->with('success', 'User berhasil ditolak.');
     }
 
     // Hapus user
