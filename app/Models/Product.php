@@ -4,25 +4,34 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Category;
+use App\Models\Transaksi;
+
 
 class Product extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-    'name',
-    'sku',
-    'category_id',
-    'purchase_price',
-    'selling_price',
-    'stock',
-    'minimum_stock',
-    'unit',
-    'expired_date'
-];
+        'name',
+        'kode',
+        'stock',
+        'minimum_stock',
+        'category_id'
+    ];
 
-public function category()
+    // Relasi ke kategori
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+    public function admin()
 {
-    return $this->belongsTo(Category::class);
+    return $this->belongsTo(User::class, 'created_by');
+}
+
+public function supplier()
+{
+    return $this->belongsTo(Supplier::class);
 }
 }

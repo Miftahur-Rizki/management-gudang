@@ -2,10 +2,10 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Admin - Sistem Gudang</title>
+    <title>Petugas - Sistem Gudang</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap 5 -->
+   <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Icons -->
@@ -69,37 +69,12 @@
     }, 3000);
 </script>
 
-<script>
-const ctx = document.getElementById('chartTransaksi');
-
-if (ctx) {
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: {!! json_encode($labels ?? []) !!},
-            datasets: [
-                {
-                    label: 'Barang Masuk',
-                    data: {!! json_encode($dataMasuk ?? []) !!},
-                    backgroundColor: 'rgba(54, 162, 235, 0.7)'
-                },
-                {
-                    label: 'Barang Keluar',
-                    data: {!! json_encode($dataKeluar ?? []) !!},
-                    backgroundColor: 'rgba(255, 99, 132, 0.7)'
-                }
-            ]
-        }
-    });
-}
-</script>
-
 <body>
 
-@include('admin.layout.sidebar')
+@include('petugas.layout.sidebar')
 
 <div class="content-wrapper">
-    @include('admin.layout.navbar')
+    @include('petugas.layout.navbar')
 
     <div class="mt-4">
         @yield('content')

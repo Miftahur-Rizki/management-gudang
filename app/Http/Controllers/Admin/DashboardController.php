@@ -7,25 +7,22 @@ use App\Models\Product;
 use App\Models\User;
 use App\Models\BarangMasuk;
 use App\Models\BarangKeluar;
+use App\Models\Transaksi;
 
 class DashboardController extends Controller
 {
     public function index()
-    {
-        $totalProduk = Product::count();
-        $totalUser = User::count();
-        $totalMasuk = BarangMasuk::count();
-        $totalKeluar = BarangKeluar::count();
+{
+    $totalBarang = Product::count();
+    $totalStok = Product::sum('stock');
+    $totalUser = User::count();
+    //$transaksiHariIni = Transaksi::whereDate('created_at', today())->count();
 
-        // Produk dengan stok <= minimum_stock
-        $stokMinimum = Product::whereColumn('stock', '<=', 'minimum_stock')->get();
-
-        return view('admin.dashboard', compact(
-            'totalProduk',
-            'totalUser',
-            'totalMasuk',
-            'totalKeluar',
-            'stokMinimum'
-        ));
-    }
+    return view('admin.dashboard', compact(
+        'totalBarang',
+        'totalStok',
+        'totalUser',
+        //'transaksiHariIni'
+    ));
+}
 }

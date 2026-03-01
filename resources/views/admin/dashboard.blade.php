@@ -1,78 +1,112 @@
 @extends('admin.layout.app')
 
 @section('content')
-<div class="container mt-4">
 
-    <h3>Dashboard Admin</h3>
+<div class="container-fluid">
 
-    <div class="row mt-4">
+    <h3 class="mb-4 fw-bold">Dashboard Admin</h3>
+
+    <!-- Stat Cards -->
+    <div class="row g-4">
 
         <div class="col-md-3">
-            <div class="card text-white bg-primary mb-3">
+            <div class="card shadow-sm border-0 bg-primary text-white">
                 <div class="card-body">
-                    <h5>Total Produk</h5>
-                    <h3>{{ $totalProduk }}</h3>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small>Total Barang</small>
+                            <h3 class="fw-bold">{{ $totalBarang ?? 0 }}</h3>
+                        </div>
+                        <i class="bi bi-box fs-1 opacity-50"></i>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="card text-white bg-success mb-3">
+            <div class="card shadow-sm border-0 bg-success text-white">
                 <div class="card-body">
-                    <h5>Total User</h5>
-                    <h3>{{ $totalUser }}</h3>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small>Total Stok</small>
+                            <h3 class="fw-bold">{{ $totalStok ?? 0 }}</h3>
+                        </div>
+                        <i class="bi bi-stack fs-1 opacity-50"></i>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="card text-white bg-info mb-3">
+            <div class="card shadow-sm border-0 bg-info text-white">
                 <div class="card-body">
-                    <h5>Total Barang Masuk</h5>
-                    <h3>{{ $totalMasuk }}</h3>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small>Total User</small>
+                            <h3 class="fw-bold">{{ $totalUser ?? 0 }}</h3>
+                        </div>
+                        <i class="bi bi-people fs-1 opacity-50"></i>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="card text-white bg-danger mb-3">
+            <div class="card shadow-sm border-0 bg-danger text-white">
                 <div class="card-body">
-                    <h5>Total Barang Keluar</h5>
-                    <h3>{{ $totalKeluar }}</h3>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small>Transaksi Hari Ini</small>
+                            <h3 class="fw-bold">{{ $transaksiHariIni ?? 0 }}</h3>
+                        </div>
+                        <i class="bi bi-arrow-left-right fs-1 opacity-50"></i>
+                    </div>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <hr>
-
-    <h4>⚠ Produk Stok Minimum</h4>
-
-    @if($stokMinimum->count() > 0)
-        <table class="table table-bordered table-danger">
-            <thead>
-                <tr>
-                    <th>Nama Produk</th>
-                    <th>Stok</th>
-                    <th>Minimum Stok</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($stokMinimum as $produk)
-                <tr>
-                    <td>{{ $produk->name }}</td>
-                    <td>{{ $produk->stock }}</td>
-                    <td>{{ $produk->minimum_stock }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    @else
-        <div class="alert alert-success">
-            Semua stok dalam kondisi aman 👍
+    <!-- Grafik -->
+    <div class="card shadow-sm border-0 mt-5">
+        <div class="card-body">
+            <h5 class="mb-3">Grafik Barang Masuk & Keluar</h5>
+            <canvas id="chartTransaksi" height="100"></canvas>
         </div>
-    @endif
+    </div>
+
+    <!-- Stok Minimum -->
+    <div class="card shadow-sm border-0 mt-4">
+        <div class="card-body">
+            <h5 class="mb-3 text-danger">⚠ Produk Stok Minimum</h5>
+
+            @if(isset($stokMinimum) && $stokMinimum->count() > 0)
+                <table class="table table-bordered table-hover">
+                    <thead class="table-danger">
+                        <tr>
+                            <th>Nama Produk</th>
+                            <th>Stok</th>
+                            <th>Minimum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($stokMinimum as $produk)
+                        <tr>
+                            <td>{{ $produk->name }}</td>
+                            <td>{{ $produk->stock }}</td>
+                            <td>{{ $produk->minimum_stock }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @else
+                <div class="alert alert-success">
+                    Semua stok dalam kondisi aman 👍
+                </div>
+            @endif
+        </div>
+    </div>
 
 </div>
+
 @endsection
