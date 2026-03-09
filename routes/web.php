@@ -44,11 +44,15 @@ Route::middleware(['auth', 'role:admin'])
     ->name('admin.')
     ->group(function () {
 
+        // ======================
         // Dashboard
+        // ======================
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
+        // ======================
         // Manajemen User
+        // ======================
         Route::get('/users', [UserController::class, 'index'])
             ->name('users.index');
 
@@ -62,7 +66,14 @@ Route::middleware(['auth', 'role:admin'])
             ->name('users.destroy');
 
 
-        //kategori
+        // ======================
+        // MASTER DATA
+        // ======================
+
+        // Produk
+        Route::resource('products', ProductController::class);
+
+       //kategori
 
         Route::get('/categories', [CategoryController::class, 'index'])
             ->name('categories.index');
@@ -76,69 +87,46 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])
             ->name('categories.destroy');
 
+        // Supplier
+        Route::resource('suppliers', SupplierController::class);
 
         // ======================
-        // PRODUK
+        // MONITORING
         // ======================
-        Route::get('/products', [\App\Http\Controllers\Admin\ProductController::class, 'index'])
-            ->name('products.index');
 
-        Route::post('/products', [\App\Http\Controllers\Admin\ProductController::class, 'store'])
-            ->name('products.store');
+        Route::middleware(['role:admin'])->group(function () {
+        Route::get('/barang-masuk', [BarangMasukController::class, 'index']);
+        });
 
-        Route::put('/products/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'update'])
-            ->name('products.update');
+        Route::middleware(['role:admin|supervisor'])->group(function () {
+        Route::get('/barang-keluar', [BarangKeluarController::class, 'index']);
+        });
 
-        Route::delete('/products/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'destroy'])
-            ->name('products.destroy');
-
-
-        // ======================
-        // SUPPLIER
-        // ======================
-        Route::get('/suppliers', [\App\Http\Controllers\Admin\SupplierController::class, 'index'])
-            ->name('suppliers.index');
-
-        Route::post('/suppliers', [\App\Http\Controllers\Admin\SupplierController::class, 'store'])
-            ->name('suppliers.store');
-
-        Route::put('/suppliers/{id}', [\App\Http\Controllers\Admin\SupplierController::class, 'update'])
-            ->name('suppliers.update');
-
-        Route::delete('/suppliers/{id}', [\App\Http\Controllers\Admin\SupplierController::class, 'destroy'])
-            ->name('suppliers.destroy');
-
-
-        // ======================
-        // BARANG MASUK
-        // ======================
         Route::get('/barang-masuk', [BarangMasukController::class, 'index'])
             ->name('barang-masuk.index');
 
-        Route::post('/barang-masuk', [BarangMasukController::class, 'store'])
-            ->name('barang-masuk.store');
-
-
-        // ======================
-        // BARANG KELUAR
-        // ======================
         Route::get('/barang-keluar', [BarangKeluarController::class, 'index'])
             ->name('barang-keluar.index');
+        
 
-        Route::post('/barang-keluar', [BarangKeluarController::class, 'store'])
-            ->name('barang-keluar.store');
+        Route::get('/stok', [ProductController::class, 'stock'])
+        ->name('stok.index');
 
 
         // ======================
         // LAPORAN
         // ======================
-        Route::get('/laporan/stok', [\App\Http\Controllers\Admin\LaporanController::class, 'stok'])
-            ->name('laporan.stok');
 
-        Route::get('/laporan/transaksi', [\App\Http\Controllers\Admin\LaporanController::class, 'transaksi'])
-            ->name('laporan.transaksi');
+        Route::get('/laporan', [LaporanController::class, 'index'])
+        ->name('laporan.index');
+
+
+       
 
     });
+
+    
+
 
 
 // ======================
@@ -157,6 +145,9 @@ Route::middleware(['auth', 'role:supervisor'])->group(function () {
     Route::view('/supervisor/dashboard', 'supervisor.dashboard')
         ->name('supervisor.dashboard');
 });
+
+ Route::post('/barang-masuk/{id}/approve', [BarangMasukController::class, 'approve'])
+        ->middleware('role:supervisor');
 
 
 // ======================

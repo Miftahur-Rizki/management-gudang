@@ -2,24 +2,38 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class BarangMasuk extends Model
 {
-    use HasFactory;
-
     protected $table = 'barang_masuk';
 
-protected $fillable = [
-    'product_id',
-    'quantity',
-    'tanggal_masuk',
-    'keterangan'
-];
+    protected $fillable = [
+        'kode_transaksi',
+        'supplier_id',
+        'tanggal_masuk',
+        'status',
+        'created_by',
+        'approved_by'
+    ];
 
-public function product()
-{
-    return $this->belongsTo(Product::class);
-}
+    public function details()
+    {
+        return $this->hasMany(BarangMasukDetail::class);
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
 }

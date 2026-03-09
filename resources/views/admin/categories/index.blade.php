@@ -9,25 +9,6 @@
     </button>
 </div>
 
-{{-- Alert Success --}}
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
-
-{{-- Alert Error --}}
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul class="mb-0">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
 <div class="card shadow-sm">
     <div class="card-body">
         <table class="table table-bordered table-striped align-middle">
@@ -53,17 +34,15 @@
                             </button>
 
                             {{-- Tombol Hapus --}}
-                            <form action="{{ route('admin.categories.destroy', $category->id) }}"
-                                  method="POST"
-                                  class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm btn-danger"
-                                        onclick="return confirm('Hapus kategori ini?')">
-                                    Hapus
-                                </button>
-                            </form>
-
+                            <form action="{{ route('admin.categories.destroy',$category->id) }}"
+                                    method="POST"
+                                    class="d-inline delete-form">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" class="btn btn-sm btn-danger delete-btn">
+                                        Hapus
+                                    </button>
+                                </form>
                         </td>
                     </tr>
 
