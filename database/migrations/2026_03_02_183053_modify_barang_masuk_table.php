@@ -6,26 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up()
+    public function up(): void
     {
         Schema::table('barang_masuk', function (Blueprint $table) {
 
-            // Tambah kode transaksi & supplier
-            $table->string('kode_transaksi')->unique()->after('id');
-            $table->foreignId('supplier_id')->nullable()->after('kode_transaksi')->constrained();
+            // hapus foreign key dulu
+            $table->dropForeign(['product_id']);
 
-            // Hapus kolom lama
+            // baru hapus kolom
             $table->dropColumn(['product_id', 'quantity']);
         });
     }
-    /**
-     * Reverse the migrations.
-     */
+
     public function down(): void
     {
-        //
+        Schema::table('barang_masuk', function (Blueprint $table) {
+            $table->unsignedBigInteger('product_id');
+            $table->integer('quantity');
+
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+        });
     }
 };
